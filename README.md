@@ -10,10 +10,10 @@ pip install -r requirements.txt
 
 Далее в .env файле найдете переменную SECRET_KEY
 
-SECRET_KEY - ключ который дается при регистрации на SuperJob. Он выглядит примерно так: `v3.h.4885.5983fb2db8794fdbd6cb41da689f6b9d92fcd.cee41be3c9ed567a1460ff46852966a55795`
+SUPER_JOB_KEY - ключ который дается при регистрации на SuperJob. Он выглядит примерно так: `v3.h.4885.5983fb2db8794fdbd6cb41da689f6b9d92fcd.cee41be3c9ed567a1460ff46852966a55795`
 
 ```
-SECRET_KEY=ваш ключ
+SUPER_JOB_KEY=ваш ключ
 ```
 
 ### Запуск программы
