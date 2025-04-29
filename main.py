@@ -4,31 +4,7 @@ import os
 from dotenv import load_dotenv
 from terminaltables import AsciiTable
 
-
-programming_languages = ["java", "javascript", "python", "C++", "C#", "C"]
-
-
-def create_table(language_name, table_data):
-    table_data.append([language_name, info_about_language[language_name]['vacancies_found'], info_about_language[language_name]['vacancies_processed'], info_about_language[language_name]['average_salary']])
-    table = AsciiTable(table_data)
-
-    return table.table
-
-def predict_rub_salary_for_superJob(payment_from, payment_to):
-    if payment_from == 0 and payment_to == 0:
-        return None
-    elif payment_from == 0:
-        return int(payment_to *1.2)
-    elif payment_to == 0:
-        return int(payment_from *0.8)
-    else:
-        return int((payment_from+payment_to)/2)
-    
-
-def info_about_vacansies_in_superjob():
-    table_data = [
-        ['Язык программирования', 'Вакансий найдено', 'Вакансий обработано', 'Средняя зарплата'],
-    ]
+def get_super_job_statistics(programming_languages):
     load_dotenv()
     secret_key = os.environ["SECRET_KEY"]
     info_about_language = {}
@@ -47,47 +23,53 @@ def info_about_vacansies_in_superjob():
             page_response = requests.get(url, headers=headers, params=payload)
             page_response.raise_for_status()
             page_payload = page_response.json()["objects"]
-                
-            list_of_average_salaries = []
+
+            
+            average_salaries = []
             for profession_num, professions in enumerate(page_payload):
                 job = page_payload[profession_num]
                 payment_from = (job["payment_from"])
                 payment_to = (job["payment_to"])
-                salary = predict_rub_salary_for_superJob(payment_from, payment_to)
+                salary = predict_rub_salary(payment_from, payment_to)
                 if salary != None:
-                    list_of_average_salaries.append(predict_rub_salary_for_superJob(payment_from, payment_to))
+                    average_salaries.append(salary)
+
+                average_salary = int((sum(average_salaries)/len(average_salaries)))
 
             if not page_response.json()["more"]:
                 break
-
-        average_salary = int((sum(list_of_average_salaries)/len(list_of_average_salaries)))
-
+            
         info_about_vacancies = {
             "vacancies_found": page_response.json()["total"],
-            "vacancies_processed": len(list_of_average_salaries),
+            "vacancies_processed": len(average_salaries),
             "average_salary": average_salary
-            }
+        }
         info_about_language[language_name] = info_about_vacancies
-
-        create_table(language_name, table_data)
-    print(create_table(language_name, table_data))
+    return info_about_language
         
-def predict_rub_salary(salary):
-    if salary["from"] == None:
-        return int(salary["to"]*1.2)
-    elif salary["to"] == None:
-        return int(salary["from"]*0.8)
-    else:
-        return int((salary["from"]+salary["to"])/2)
-    
-info_about_language = {}
 
-def info_about_vacansies_in_hh_ru():
+def predict_rub_salary(payment_from, payment_to):
+    if payment_from == None:
+        return int(payment_to*1.2)
+    elif payment_to == None:
+        return int(payment_from*0.8)
+    else:
+        return int((payment_from+payment_to)/2)
+    
+
+def create_table(programming_languages, info_about_language):
     table_data = [
-        ['Язык программирования', 'Вакансий найдено', 'Вакансий обработано', 'Средняя зарплата'],
+        ['Язык программирования', 'Вакансий найдено', 'Вакансий обработано', 'Средняя зарплата']
     ]
     for language_name in programming_languages:
-        
+        table_data.append([language_name, info_about_language[language_name]['vacancies_found'], info_about_language[language_name]['vacancies_processed'], info_about_language[language_name]['average_salary']])
+    table = AsciiTable(table_data)
+    return table.table
+    
+
+def get_hh_ru_statistic(programming_languages):
+    info_about_language = {}
+    for language_name in programming_languages:       
         area = 1
         url = "https://api.hh.ru/vacancies"
         for page in count(0, 1):
@@ -103,28 +85,36 @@ def info_about_vacansies_in_hh_ru():
             page_payload = page_response.json()
 
             works = page_response.json()["items"]
-            list_of_average_salaries = []
+            average_salaries = []
             for name_num, name in enumerate(works):
                 work = works[name_num]
                 salary = work["salary"]
                 if salary != None:
-                    list_of_average_salaries.append(predict_rub_salary(salary))
+                    payment_from = salary['from']
+                    payment_to = salary['to']
+                    average_salaries.append(predict_rub_salary(payment_from, payment_to))
+
+                    average_salary = int((sum(average_salaries)/len(average_salaries)))
             
             if page >= page_payload['pages']-1:
                 break
-        
-        average_salary = int((sum(list_of_average_salaries)/len(list_of_average_salaries)))
-    
+             
         info_about_vacancies = {
-            "vacancies_found": page_payload["found"],
-            "vacancies_processed": len(list_of_average_salaries),
+            "vacancies_found": page_response.json()["found"],
+            "vacancies_processed": len(average_salaries),
             "average_salary": average_salary
-            }
+        }
+
         info_about_language[language_name] = info_about_vacancies
-
-        create_table(language_name, table_data)
-    print(create_table(language_name, table_data))   
+    return info_about_language
 
 
-info_about_vacansies_in_superjob()
-info_about_vacansies_in_hh_ru()
+def main():
+    programming_languages = ["java", "javascript", "python", "C++", "C#", "C"]
+    super_job_statistics = get_super_job_statistics(programming_languages)
+    print(create_table(programming_languages, super_job_statistics))
+    hh_ru_statistics = get_hh_ru_statistic(programming_languages)
+    print(create_table(programming_languages, hh_ru_statistics))
+
+if __name__=="__main__":
+    main()
