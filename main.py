@@ -30,11 +30,13 @@ def get_super_job_statistics(programming_languages):
             for vacancy_num, vacancy in enumerate(vacancies):
                 payment_from = (vacancy["payment_from"])
                 payment_to = (vacancy["payment_to"])
-                salary = predict_rub_salary(payment_from, payment_to)
-                if salary != None:
-                    average_salaries.append(salary)
+                if payment_to != 0 or payment_from != 0:
+                    average_salaries.append(predict_rub_salary(payment_from, payment_to))
 
-            average_salary = int((sum(average_salaries)/len(average_salaries)))
+            if len(average_salaries) != 0:
+                average_salary = int((sum(average_salaries)/len(average_salaries)))
+            else:
+                average_salary = 0
 
             if not page_response.json()["more"]:
                 break
@@ -48,7 +50,7 @@ def get_super_job_statistics(programming_languages):
     return sj_statistic
         
 
-def predict_rub_salary(payment_from, payment_to):
+def predict_rub_salary(payment_from, payment_to):      
     if payment_from == None:
         return int(payment_to*1.2)
     elif payment_to == None:
@@ -86,13 +88,16 @@ def get_hh_statistics(programming_languages):
             average_salaries = []
             for vacancy_num, vacancy in enumerate(vacancies):
                 salary = vacancy["salary"]
-                if salary != None:
+                if salary:
                     payment_from = salary['from']
                     payment_to = salary['to']
                     average_salaries.append(predict_rub_salary(payment_from, payment_to))
+                        
+            if len(average_salaries) != 0:                
+                average_salary = int((sum(average_salaries)/len(average_salaries)))
+            else:
+                average_salary = 0
 
-                    average_salary = int((sum(average_salaries)/len(average_salaries)))
-            
             if page >= page_response.json()['pages']-1:
                 break
              
