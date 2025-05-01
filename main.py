@@ -51,12 +51,12 @@ def get_super_job_statistics(programming_languages):
         
 
 def predict_rub_salary(payment_from, payment_to):      
-    if payment_from == None:
-        return int(payment_to*1.2)
-    elif payment_to == None:
-        return int(payment_from*0.8)
-    else:
+    if payment_from and payment_to:
         return int((payment_from+payment_to)/2)
+    elif payment_to:
+        return int(payment_to*0.8)
+    else:
+        return int(payment_from*1.2)
     
 
 def create_table(programming_languages, language_statistic):
