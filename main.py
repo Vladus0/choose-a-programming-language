@@ -46,6 +46,7 @@ def get_super_job_statistics(programming_languages):
             "vacancies_processed": len(average_salaries),
             "average_salary": average_salary
         }
+        
         sj_statistic[language_name] = vacancies_statistics
     return sj_statistic
         
