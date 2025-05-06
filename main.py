@@ -30,10 +30,10 @@ def get_super_job_statistics(programming_languages):
             for vacancy_num, vacancy in enumerate(vacancies):
                 payment_from = (vacancy["payment_from"])
                 payment_to = (vacancy["payment_to"])
-                if payment_to != 0 or payment_from != 0:
+                if payment_to or payment_from:
                     average_salaries.append(predict_rub_salary(payment_from, payment_to))
 
-            if len(average_salaries) != 0:
+            if len(average_salaries):
                 average_salary = int((sum(average_salaries)/len(average_salaries)))
             else:
                 average_salary = 0
@@ -93,7 +93,7 @@ def get_hh_statistics(programming_languages):
                     payment_to = salary['to']
                     average_salaries.append(predict_rub_salary(payment_from, payment_to))
                         
-            if len(average_salaries) != 0:                
+            if len(average_salaries):                
                 average_salary = int((sum(average_salaries)/len(average_salaries)))
             else:
                 average_salary = 0
