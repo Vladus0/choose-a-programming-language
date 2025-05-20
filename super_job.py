@@ -20,7 +20,8 @@ def get_super_job_statistics(programming_languages, super_job_key):
             }      
             page_response = requests.get(url, headers=headers, params=payload)
             page_response.raise_for_status()
-            vacancies = page_response.json()["objects"]
+            sj_response = page_response.json()
+            vacancies = sj_response["objects"]
 
             
             average_salaries = []
@@ -35,11 +36,11 @@ def get_super_job_statistics(programming_languages, super_job_key):
             else:
                 average_salary = 0
 
-            if not page_response.json()["more"]:
+            if not sj_response["more"]:
                 break
             
         vacancies_statistics = {
-            "vacancies_found": page_response.json()["total"],
+            "vacancies_found": sj_response["total"],
             "vacancies_processed": len(average_salaries),
             "average_salary": average_salary
         }

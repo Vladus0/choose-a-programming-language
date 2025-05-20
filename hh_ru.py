@@ -17,8 +17,10 @@ def get_hh_statistics(programming_languages):
             }
             page_response = requests.get(url, params=payload)
             page_response.raise_for_status()
+            hh_response = page_response.json()
+            vacancies = hh_response["items"]
 
-            vacancies = page_response.json()["items"]
+
             average_salaries = []
             for vacancy_num, vacancy in enumerate(vacancies):
                 salary = vacancy["salary"]
@@ -32,11 +34,11 @@ def get_hh_statistics(programming_languages):
             else:
                 average_salary = 0
 
-            if page >= page_response.json()['pages']-1:
+            if page >= hh_response['pages']-1:
                 break
              
         vacancies_statistics = {
-            "vacancies_found": page_response.json()["found"],
+            "vacancies_found": hh_response["found"],
             "vacancies_processed": len(average_salaries),
             "average_salary": average_salary
         }
