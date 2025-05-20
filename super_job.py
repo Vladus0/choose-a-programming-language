@@ -25,8 +25,8 @@ def get_super_job_statistics(programming_languages, super_job_key):
             
             average_salaries = []
             for vacancy_num, vacancy in enumerate(vacancies):
-                payment_from = (vacancy["payment_from"])
-                payment_to = (vacancy["payment_to"])
+                payment_from = vacancy["payment_from"]
+                payment_to = vacancy["payment_to"]
                 if payment_to or payment_from:
                     average_salaries.append(predict_rub_salary(payment_from, payment_to))
 
