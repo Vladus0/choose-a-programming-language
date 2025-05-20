@@ -28,14 +28,15 @@ def get_hh_statistics(programming_languages):
                     payment_from = salary['from']
                     payment_to = salary['to']
                     average_salaries.append(predict_rub_salary(payment_from, payment_to))
-                        
-            if len(average_salaries):                
-                average_salary = int((sum(average_salaries)/len(average_salaries)))
-            else:
-                average_salary = 0
-
+        
             if page >= hh_response['pages']-1:
                 break
+
+
+        if len(average_salaries):                
+            average_salary = int((sum(average_salaries)/len(average_salaries)))
+        else:
+            average_salary = 0
              
         vacancies_statistics = {
             "vacancies_found": hh_response["found"],

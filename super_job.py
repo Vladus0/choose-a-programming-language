@@ -31,14 +31,14 @@ def get_super_job_statistics(programming_languages, super_job_key):
                 if payment_to or payment_from:
                     average_salaries.append(predict_rub_salary(payment_from, payment_to))
 
-            if len(average_salaries):
-                average_salary = int((sum(average_salaries)/len(average_salaries)))
-            else:
-                average_salary = 0
-
             if not sj_response["more"]:
                 break
             
+        if len(average_salaries):
+            average_salary = int((sum(average_salaries)/len(average_salaries)))
+        else:
+            average_salary = 0
+
         vacancies_statistics = {
             "vacancies_found": sj_response["total"],
             "vacancies_processed": len(average_salaries),
