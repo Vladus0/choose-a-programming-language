@@ -4,8 +4,7 @@ import os
 from predict_rub_salary import predict_rub_salary
 
 
-def get_super_job_statistics(programming_languages):
-    super_job_key = os.environ["SUPER_JOB_KEY"]
+def get_super_job_statistics(programming_languages, super_job_key):
     sj_statistic = {}
     for language_name in programming_languages:
         for page in count(0, 1):

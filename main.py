@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 from super_job import get_super_job_statistics
 from hh_ru import get_hh_statistics
 from terminaltables import AsciiTable
+import os
 
 
 def create_table(programming_languages, language_statistic):
@@ -15,8 +16,9 @@ def create_table(programming_languages, language_statistic):
 
 def main():
     load_dotenv()
+    super_job_key = os.environ["SUPER_JOB_KEY"]
     programming_languages = ["java", "javascript", "python", "C++", "C#", "C"]
-    super_job_statistics = get_super_job_statistics(programming_languages)
+    super_job_statistics = get_super_job_statistics(programming_languages, super_job_key)
     print(create_table(programming_languages, super_job_statistics))
     hh_ru_statistics = get_hh_statistics(programming_languages)
     print(create_table(programming_languages, hh_ru_statistics))
