@@ -5,12 +5,12 @@ from terminaltables import AsciiTable
 import os
 
 
-def create_table(programming_languages, language_statistic):
+def create_table(language_statistic):
     vacansies_table = [
         ['Язык программирования', 'Вакансий найдено', 'Вакансий обработано', 'Средняя зарплата']
     ]
-    for language_name in programming_languages:
-        vacansies_table.append([language_name, language_statistic[language_name]['vacancies_found'], language_statistic[language_name]['vacancies_processed'], language_statistic[language_name]['average_salary']])
+    for language_name, statistic in language_statistic.items():
+        vacansies_table.append([language_name, statistic['vacancies_found'], statistic['vacancies_processed'], statistic['average_salary']])
     table = AsciiTable(vacansies_table)
     return table.table
 
@@ -19,9 +19,9 @@ def main():
     super_job_key = os.environ["SUPER_JOB_KEY"]
     programming_languages = ["java", "javascript", "python", "C++", "C#", "C"]
     super_job_statistics = get_super_job_statistics(programming_languages, super_job_key)
-    print(create_table(programming_languages, super_job_statistics))
+    print(create_table(super_job_statistics))
     hh_ru_statistics = get_hh_statistics(programming_languages)
-    print(create_table(programming_languages, hh_ru_statistics))
+    print(create_table(hh_ru_statistics))
 
 
 if __name__=="__main__":
